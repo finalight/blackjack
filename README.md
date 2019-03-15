@@ -2,6 +2,7 @@
 A simple blackjack game, still in progress
 
 #Todo
+
 A lot of things!
 
 - Winning combination
