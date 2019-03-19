@@ -48,12 +48,14 @@ var rankList = map[int]string{
 
 // Initialize creates the necessary player's card
 func Initialize(game *Game, numOfPlayers int, deck *Deck) (Game, Deck) {
+	// create a dealer first
+	player := Player{}
+	player.IsDealer = true
+	game.Players = append(game.Players, player)
+
+	// create the rest of the players
 	for playerNum := 0; playerNum < numOfPlayers; playerNum++ {
 		player := Player{}
-		// assume first player is a dealer
-		if playerNum == 0 {
-			player.IsDealer = true
-		}
 		game.Players = append(game.Players, player)
 	}
 
@@ -89,7 +91,7 @@ func main() {
 	})
 
 	game := Game{}
-	game, deck = Initialize(&game, 5, &deck)
+	game, deck = Initialize(&game, 1, &deck)
 
 	for index, player := range game.Players {
 		player.TotalScore = CheckValue(player)
@@ -166,6 +168,26 @@ func CheckValue(player Player) int {
 	}
 
 	return totalScore
+}
+
+// CheckBurst checks whether the player's cards has burst 21 points
+func CheckBurst(player Player) bool {
+	totalScore := 0
+	actualPointsMap := map[int]int{
+		11: 10,
+		12: 10,
+		13: 10,
+	}
+
+	for _, card := range player.Cards {
+		if card.Rank > 10 {
+			totalScore += actualPointsMap[card.Rank]
+		} else {
+			totalScore += card.Rank
+		}
+	}
+
+	return totalScore > 21
 }
 
 // CheckBlackJack check if the combination is a blackjack
